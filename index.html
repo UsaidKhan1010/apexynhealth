@@ -4,111 +4,182 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Apexyn Automations AI | Healthcare AI Receptionist</title>
+
+  <!-- Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="icon" href="051ee82c-77da-4b70-a835-e8b151d08107.png" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- Favicon -->
+  <link rel="icon" href="./logo.png" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #1b0126, #0a0010 60%);
+      color: white;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Glowing cursor trail */
+    .cursor {
+      width: 30px;
+      height: 30px;
+      border: 2px solid rgba(160, 64, 255, 0.5);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, opacity 0.3s ease;
+      mix-blend-mode: difference;
+      z-index: 9999;
+    }
+
+    section {
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .btn-glow {
+      background: linear-gradient(90deg, #6a00ff, #a855f7);
+      box-shadow: 0 0 15px #7e22ce;
+      transition: all 0.3s ease;
+    }
+    .btn-glow:hover {
+      box-shadow: 0 0 30px #a855f7;
+      transform: scale(1.05);
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #a855f7, #9333ea);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
 </head>
 
-<body class="bg-gray-900 text-white">
+<body>
+  <div class="cursor"></div>
 
   <!-- Navbar -->
-  <nav class="flex justify-between items-center px-8 py-5 bg-gray-800 shadow-md">
+  <nav class="flex justify-between items-center px-8 py-5 bg-opacity-20 backdrop-blur-md fixed top-0 w-full z-50 border-b border-purple-800/40">
     <div class="flex items-center space-x-3">
-      <img src="051ee82c-77da-4b70-a835-e8b151d08107.png" alt="Apexyn Logo" class="w-12 h-12">
-      <h1 class="text-2xl font-bold">Apexyn Automations AI</h1>
+      <img src="./logo.png" alt="Apexyn Logo" class="w-10 h-10 rounded-full shadow-lg">
+      <h1 class="text-2xl font-bold gradient-text">Apexyn Automations AI</h1>
     </div>
-    <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="bg-blue-600 px-5 py-2 rounded-lg hover:bg-blue-700 font-semibold">Book a Demo</a>
+    <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="btn-glow px-5 py-2 rounded-lg font-semibold">Book a Demo</a>
   </nav>
 
   <!-- Hero Section -->
-  <section class="text-center py-20 px-5 bg-gradient-to-b from-blue-900 to-gray-900">
-    <h1 class="text-5xl font-extrabold mb-6 leading-tight">
-      Revolutionize Your Healthcare Clinic with AI Receptionist & Automations
+  <section class="fade-in text-center py-40 px-5 bg-gradient-to-b from-purple-900/40 to-black mt-16">
+    <h1 class="text-6xl font-extrabold mb-6 leading-tight gradient-text">
+      Revolutionize Your Healthcare Clinic with AI
     </h1>
     <p class="text-lg text-gray-300 max-w-3xl mx-auto mb-8">
-      Stop missing patient calls, reduce no-shows, and eliminate staff burnout with AI-driven scheduling, reminders, and document automation.
+      Stop missing patient calls, reduce no-shows, and eliminate staff burnout with AI-driven scheduling and automation.
     </p>
-    <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="bg-blue-600 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-700 transition">
-      Schedule Your Free Demo
-    </a>
+    <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo"
+       class="btn-glow px-8 py-4 rounded-xl text-lg font-semibold">Schedule a Free Demo</a>
   </section>
 
-  <!-- Pain Points Section -->
-  <section class="py-20 px-10 bg-gray-800">
-    <h2 class="text-4xl font-bold text-center mb-12">Your Clinic’s Pain Points — Solved</h2>
+  <!-- Pain Points -->
+  <section class="fade-in py-20 px-10 bg-black bg-opacity-60">
+    <h2 class="text-4xl font-bold text-center mb-12 gradient-text">Your Clinic’s Pain Points — Solved</h2>
     <div class="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-      <div class="bg-gray-700 p-8 rounded-xl shadow-lg">
+      <div class="bg-purple-900/30 p-8 rounded-xl border border-purple-600/20 hover:border-purple-400 transition">
         <h3 class="text-2xl font-semibold mb-3">Missed Calls & Lost Patients</h3>
         <p class="text-gray-300">AI receptionist answers every call 24/7, books appointments, and qualifies leads instantly.</p>
       </div>
-      <div class="bg-gray-700 p-8 rounded-xl shadow-lg">
+      <div class="bg-purple-900/30 p-8 rounded-xl border border-purple-600/20 hover:border-purple-400 transition">
         <h3 class="text-2xl font-semibold mb-3">No-Shows & Empty Slots</h3>
-        <p class="text-gray-300">Automated SMS/WhatsApp reminders and rescheduling flows reduce no-shows by up to 28%.</p>
+        <p class="text-gray-300">Automated reminders and rescheduling flows reduce no-shows by up to 28%.</p>
       </div>
-      <div class="bg-gray-700 p-8 rounded-xl shadow-lg">
-        <h3 class="text-2xl font-semibold mb-3">Slow Intake & Burnt-out Staff</h3>
+      <div class="bg-purple-900/30 p-8 rounded-xl border border-purple-600/20 hover:border-purple-400 transition">
+        <h3 class="text-2xl font-semibold mb-3">Slow Intake & Burnout</h3>
         <p class="text-gray-300">Automated forms, e-sign, and pre-visit triage sync directly with your EHR/CRM.</p>
       </div>
     </div>
   </section>
 
-  <!-- Solutions Section -->
-  <section class="py-20 px-10 bg-gray-900">
-    <h2 class="text-4xl font-bold text-center mb-12">Apexyn AI Solutions</h2>
+  <!-- Solutions -->
+  <section class="fade-in py-20 px-10 bg-gradient-to-b from-black to-purple-950">
+    <h2 class="text-4xl font-bold text-center mb-12 gradient-text">Apexyn AI Solutions</h2>
     <div class="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-      <div class="bg-gray-800 p-8 rounded-xl shadow-xl">
+      <div class="bg-purple-800/20 p-8 rounded-xl border border-purple-600/30">
         <h3 class="text-2xl font-semibold mb-3">AI Voice Receptionist</h3>
-        <p class="text-gray-300">Your virtual front desk — answers calls, handles scheduling, and triages patients seamlessly using natural conversation.</p>
+        <p class="text-gray-300">Answers calls, schedules appointments, and triages patients naturally.</p>
       </div>
-      <div class="bg-gray-800 p-8 rounded-xl shadow-xl">
+      <div class="bg-purple-800/20 p-8 rounded-xl border border-purple-600/30">
         <h3 class="text-2xl font-semibold mb-3">Chatbot for Websites</h3>
-        <p class="text-gray-300">Engage website visitors 24/7, capture leads, and sync appointments directly into your CRM or Google Calendar.</p>
+        <p class="text-gray-300">Engage visitors 24/7, capture leads, and sync directly with your CRM.</p>
       </div>
-      <div class="bg-gray-800 p-8 rounded-xl shadow-xl">
-        <h3 class="text-2xl font-semibold mb-3">Document & Insurance Automation</h3>
-        <p class="text-gray-300">AI-powered intake that collects, verifies, and uploads patient documents automatically before appointments.</p>
+      <div class="bg-purple-800/20 p-8 rounded-xl border border-purple-600/30">
+        <h3 class="text-2xl font-semibold mb-3">Document Automation</h3>
+        <p class="text-gray-300">AI-powered forms and insurance verification before appointments.</p>
       </div>
     </div>
   </section>
 
   <!-- Pricing -->
-  <section class="py-20 px-10 bg-gray-800">
-    <h2 class="text-4xl font-bold text-center mb-12">Simple, Transparent Pricing</h2>
+  <section class="fade-in py-20 px-10 bg-black bg-opacity-70">
+    <h2 class="text-4xl font-bold text-center mb-12 gradient-text">Simple, Transparent Pricing</h2>
     <div class="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto text-center">
-      <div class="bg-gray-700 p-8 rounded-xl">
+      <div class="bg-purple-900/30 p-8 rounded-xl border border-purple-700/30">
         <h3 class="text-2xl font-semibold mb-3">Pilot Plan</h3>
         <p class="text-3xl font-bold mb-3">$3,000–$7,000</p>
-        <p class="text-gray-400 mb-6">4-week pilot with AI receptionist, reminders, and CRM setup.</p>
-        <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="bg-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-700">Get Started</a>
+        <p class="text-gray-400 mb-6">4-week pilot with AI receptionist and CRM setup.</p>
+        <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo"
+           class="btn-glow px-6 py-3 rounded-lg font-semibold">Get Started</a>
       </div>
-      <div class="bg-blue-700 p-8 rounded-xl shadow-lg">
+      <div class="bg-purple-700 p-8 rounded-xl shadow-xl">
         <h3 class="text-2xl font-semibold mb-3">Growth Plan</h3>
         <p class="text-3xl font-bold mb-3">$1,000–$2,500/mo</p>
-        <p class="text-gray-100 mb-6">Ongoing support, advanced analytics, and process optimization.</p>
-        <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="bg-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-800">Book Demo</a>
+        <p class="text-gray-100 mb-6">Ongoing support, analytics, and optimization.</p>
+        <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo"
+           class="bg-black px-6 py-3 rounded-lg font-semibold hover:bg-gray-900">Book Demo</a>
       </div>
-      <div class="bg-gray-700 p-8 rounded-xl">
+      <div class="bg-purple-900/30 p-8 rounded-xl border border-purple-700/30">
         <h3 class="text-2xl font-semibold mb-3">Enterprise Custom</h3>
         <p class="text-3xl font-bold mb-3">Custom Quote</p>
-        <p class="text-gray-400 mb-6">AI systems tailored to large healthcare networks and hospitals.</p>
-        <a href="mailto:apexynhealth@gmail.com" class="bg-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-700">Contact Us</a>
+        <p class="text-gray-400 mb-6">Tailored AI systems for hospital networks.</p>
+        <a href="mailto:apexynhealth@gmail.com"
+           class="btn-glow px-6 py-3 rounded-lg font-semibold">Contact Us</a>
       </div>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section class="py-20 px-10 bg-gray-900 text-center">
-    <h2 class="text-4xl font-bold mb-6">Ready to Transform Your Clinic?</h2>
-    <p class="text-lg text-gray-300 mb-8">Book a free consultation or email us directly — we’ll show you how Apexyn can increase your revenue immediately.</p>
-    <div class="space-x-5">
-      <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="bg-blue-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700">Book Demo</a>
-      <a href="mailto:apexynhealth@gmail.com" class="border border-blue-500 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 hover:text-white">Email Us</a>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="bg-gray-800 py-6 text-center text-gray-400">
+  <footer class="bg-black py-6 text-center text-gray-400 border-t border-purple-800/30">
     © 2025 Apexyn Automations AI — All Rights Reserved
   </footer>
 
+  <script>
+    // Cursor effect
+    const cursor = document.querySelector('.cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+
+    // Scroll fade-in effect
+    const sections = document.querySelectorAll('.fade-in');
+    const reveal = () => {
+      const windowHeight = window.innerHeight;
+      sections.forEach(section => {
+        const sectionTop = section.getBoundingClientRect().top;
+        if (sectionTop < windowHeight - 100) section.classList.add('visible');
+      });
+    };
+    window.addEventListener('scroll', reveal);
+    reveal();
+  </script>
 </body>
 </html>
