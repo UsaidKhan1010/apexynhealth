@@ -5,269 +5,282 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Apexyn Automations AI — AI Receptionist for Clinics</title>
 
-  <!-- Tailwind Play CDN -->
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- GSAP for animations -->
+  <!-- GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
 
   <meta name="description" content="Apexyn — AI receptionist & clinic automation. Reduce no-shows, automate intake, and recover lost revenue. Book a free demo." />
-  <link rel="icon" href="logo.png" type="image/png" />
+  <link rel="icon" href="./logo.png" />
 
   <style>
-    /* --- Theme setup --- */
-    :root {
-      --accent1: #a855f7; /* neon violet */
-      --accent2: #6d28d9; /* deep purple */
-      --bg-1: #070018;
-      --bg-2: #110026;
-      --glass: rgba(255,255,255,0.04);
+    :root{
+      --accent1: #8a00ff;    /* neon violet */
+      --accent2: #5b2bff;    /* deep purple */
+      --bg-1: #05000b;
+      --bg-2: #0b0018;
     }
-    body {
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto;
-      background: radial-gradient(1200px 600px at 10% 10%, rgba(120,40,255,0.06), transparent 8%),
-                  radial-gradient(1000px 500px at 95% 90%, rgba(80,0,180,0.05), transparent 10%),
-                  linear-gradient(180deg, var(--bg-1), var(--bg-2));
-      color: #eef2ff;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
+    html,body {height:100%;}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto;
+      color:#eef2ff;
+      background:
+        radial-gradient(800px 400px at 10% 10%, rgba(138,0,255,0.06), transparent 8%),
+        radial-gradient(700px 350px at 90% 90%, rgba(91,43,255,0.04), transparent 12%),
+        linear-gradient(180deg,var(--bg-1),var(--bg-2));
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
     }
 
-    /* --- Cursor glow --- */
-    .cursor-spot {
-      position: fixed;
-      left: 0; top: 0; width: 100vw; height: 100vh;
-      pointer-events: none; z-index: 60;
-      mix-blend-mode: screen; filter: blur(14px);
-      --cx: 50vw; --cy: 50vh;
+    /* -------- Splash Intro -------- */
+    #splash {
+      position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(180deg, rgba(0,0,0,0.95), rgba(0,0,0,0.92));
+      z-index:9999;
+      pointer-events:none;
+    }
+    #splash img {
+      width: 160px; height:160px; object-fit:contain;
+      filter: drop-shadow(0 10px 30px rgba(138,0,255,0.35));
+      opacity:0; transform:scale(.85);
+    }
+
+    /* -------- Cursor effects -------- */
+    .cursor-spot { position:fixed; inset:0; pointer-events:none; z-index:60; mix-blend-mode:screen; filter: blur(12px); --cx:50vw; --cy:50vh;
       background: radial-gradient(480px circle at var(--cx) var(--cy),
-        rgba(168,85,247,0.18) 0%,
-        rgba(109,40,217,0.12) 15%,
-        transparent 40%);
-      opacity: 0.9;
+        rgba(138,0,255,0.20) 0%, rgba(91,43,255,0.10) 12%, rgba(0,0,0,0) 40%); transition:opacity .12s linear; opacity:0.95;
     }
     .cursor-dot {
-      position: fixed;
-      width: 12px; height: 12px;
-      border-radius: 50%; z-index: 70;
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.35) 25%, rgba(168,85,247,0.25) 40%, transparent 60%);
-      box-shadow: 0 0 18px rgba(168,85,247,0.4), 0 0 40px rgba(109,40,217,0.25);
-      transition: transform .1s linear;
+      position:fixed; width:14px;height:14px;border-radius:50%; pointer-events:none; z-index:70;
+      transform:translate(-50%,-50%); transition:transform .08s linear, box-shadow .12s linear;
+      background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.5) 18%, rgba(138,0,255,0.28) 40%, transparent 60%);
+      box-shadow: 0 0 18px rgba(138,0,255,0.36), 0 0 30px rgba(91,43,255,0.16);
     }
 
-    /* --- Navbar glass effect --- */
-    .nav-glass {
-      background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(168,85,247,0.08);
-    }
+    /* particle canvas */
+    #cursorCanvas { position:fixed; inset:0; z-index:65; pointer-events:none; mix-blend-mode:screen; }
 
-    /* --- Buttons --- */
-    .cta-btn {
-      background: linear-gradient(90deg, var(--accent1), var(--accent2));
-      box-shadow: 0 6px 25px rgba(109,40,217,0.25);
-      transition: all 0.25s ease;
-    }
-    .cta-btn:hover {
-      transform: translateY(-3px) scale(1.03);
-      box-shadow: 0 10px 40px rgba(109,40,217,0.35);
-    }
-    .ghost {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: .65rem 1.1rem;
-      transition: border-color .25s;
-    }
-    .ghost:hover { border-color: rgba(168,85,247,0.35); }
+    /* -------- Nav -------- */
+    .nav-glass { background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); backdrop-filter: blur(8px); border-bottom:1px solid rgba(138,0,255,0.06); z-index:50; position:fixed; width:100%; top:0; }
 
-    /* --- Card Glow --- */
+    /* -------- Cards & Buttons -------- */
     .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid rgba(130,70,255,0.06);
-      border-radius: 1rem;
-      transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+      position:relative; border-radius:14px; padding:1.25rem; background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+      border:1px solid rgba(138,0,255,0.06); transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+      overflow:hidden;
     }
-    .card:hover {
-      transform: translateY(-8px);
-      border-color: rgba(168,85,247,0.25);
-      box-shadow: 0 20px 60px rgba(100,0,200,0.25);
-    }
+    .card:hover { transform:translateY(-10px); box-shadow: 0 24px 70px rgba(60,0,120,0.28); border-color: rgba(138,0,255,0.28); }
+    .cta-btn { background: linear-gradient(90deg,var(--accent1),var(--accent2)); padding:.7rem 1.05rem; border-radius:10px; color:white; font-weight:600; display:inline-block; box-shadow:0 8px 30px rgba(91,43,255,0.14); }
+    .ghost { border:1px solid rgba(255,255,255,0.06); padding:.6rem .95rem; border-radius:10px; color: #dcd3ff; display:inline-block; }
 
-    /* --- Gradient text --- */
-    .gradient-text {
-      background: linear-gradient(90deg, var(--accent1), var(--accent2));
-      -webkit-background-clip: text;
-      color: transparent;
-    }
+    .gradient-text { background: linear-gradient(90deg,var(--accent1),var(--accent2)); -webkit-background-clip:text; color:transparent; }
 
-    /* --- Responsive adjustments --- */
-    @media (max-width: 720px) {
-      .hero-title { font-size: 2rem; }
-      .hero-sub { font-size: 0.95rem; }
-    }
+    /* small helpers */
+    .muted { color: rgba(220,210,255,0.6); }
+    @media (max-width:720px){ .hero-title{ font-size:1.6rem } .hide-xs{display:none} }
   </style>
 </head>
-
 <body>
-  <!-- Cursor Glow Layers -->
+
+  <!-- splash (logo first) -->
+  <div id="splash">
+    <img id="splashLogo" src="./logo.png" alt="Apexyn logo">
+  </div>
+
+  <!-- cursor glow layers + canvas for particles -->
   <div class="cursor-spot" id="cursorSpot"></div>
+  <canvas id="cursorCanvas"></canvas>
   <div class="cursor-dot" id="cursorDot"></div>
 
-  <!-- NAVBAR -->
-  <header class="fixed w-full z-40 top-0 left-0 nav-glass">
-    <div class="max-w-6xl mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
+  <!-- NAV -->
+  <header class="nav-glass">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <img src="logo.png" alt="Apexyn" class="w-11 h-11 rounded-md shadow-xl" />
+        <img src="./logo.png" alt="Apexyn" class="w-11 h-11 rounded-md shadow-lg">
         <div>
-          <div class="text-white font-bold text-lg">Apexyn</div>
-          <div class="text-xs text-purple-200/60 -mt-0.5">Automations AI</div>
+          <div class="text-white font-semibold">Apexyn</div>
+          <div class="text-xs muted -mt-0.5">Automations AI</div>
         </div>
       </div>
-
       <nav class="flex items-center gap-4">
-        <a href="#features" class="text-sm text-purple-200/70 hover:text-white">Features</a>
-        <a href="#pricing" class="text-sm text-purple-200/70 hover:text-white">Pricing</a>
-        <a href="#demo" class="text-sm text-purple-200/70 hover:text-white">Demo</a>
-        <a href="mailto:apexynhealth@gmail.com" class="ghost text-sm ml-2">Contact</a>
-        <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="ml-4 cta-btn text-sm px-4 py-2 rounded-md font-semibold">Book Demo</a>
+        <a href="#features" class="muted hover:text-white">Solutions</a>
+        <a href="#demo" class="muted hover:text-white">Demo</a>
+        <a href="mailto:apexynhealth@gmail.com" class="ghost">Contact</a>
+        <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="cta-btn ml-2">Book Demo</a>
       </nav>
     </div>
   </header>
 
-  <!-- HERO SECTION -->
-  <main class="pt-28">
-    <section class="max-w-6xl mx-auto px-6 lg:px-8 py-24 grid lg:grid-cols-2 gap-10 items-center">
-      <div class="space-y-6">
-        <h1 class="text-5xl lg:text-6xl font-extrabold hero-title gradient-text">
-          Revolutionize your clinic with AI reception and automation
-        </h1>
-        <p class="hero-sub text-lg text-purple-100/80 max-w-xl">
-          Apexyn automates calls, bookings, reminders, and intake — reduce no-shows, recover lost revenue, and free your staff from burnout. Pilot in 4 weeks.
-        </p>
-        <div class="flex flex-wrap gap-4">
-          <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="cta-btn text-base px-5 py-3 rounded-md inline-block">Schedule Free Demo</a>
-          <a href="#features" class="ghost text-base px-5 py-3 rounded-md inline-block">See Features</a>
-        </div>
-        <div class="mt-6 text-sm text-purple-200/70">
-          <b>Starter:</b> 4-week pilot $3k–$7k • <b>Retainer:</b> $1k–$2.5k/mo • <b>Enterprise:</b> custom.
+  <!-- MAIN -->
+  <main class="pt-20">
+    <!-- Hero -->
+    <section class="max-w-6xl mx-auto px-6 lg:px-8 py-28 grid lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <h1 class="text-5xl lg:text-6xl font-extrabold hero-title gradient-text">Revolutionize your clinic with AI reception & automation</h1>
+        <p class="mt-6 muted max-w-xl">Apexyn automates calls, bookings, reminders and intake — reduce no-shows, recover lost revenue and free your team to focus on care.</p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="cta-btn">Schedule Free Demo</a>
+          <a href="#features" class="ghost">Explore Solutions</a>
         </div>
       </div>
 
-      <div class="relative card p-6">
-        <div class="grid grid-cols-2 gap-4">
-          <div class="p-3 rounded-lg bg-black/30">
-            <div class="text-xs text-purple-200/70">Incoming Call</div>
-            <div class="mt-2 text-white font-semibold">Jane Doe — New Patient</div>
-            <div class="mt-3 text-sm text-purple-200/70">"I need a teeth cleaning next week."</div>
-            <div class="mt-4 flex gap-2">
-              <button class="px-3 py-1 text-sm rounded-md bg-green-500/10 border border-green-400/20 text-green-300">Book</button>
-              <button class="px-3 py-1 text-sm rounded-md bg-red-500/10 border border-red-400/20 text-red-300">Reschedule</button>
-            </div>
-          </div>
-          <div class="p-3 rounded-lg bg-black/30">
-            <div class="text-xs text-purple-200/70">SMS Reminder</div>
-            <div class="mt-2 text-white font-semibold">Appointment: Thu, 3 PM</div>
-            <div class="mt-3 text-sm text-purple-200/70">"Reply 1 to confirm or click to reschedule."</div>
+      <div>
+        <div class="card">
+          <div class="text-xs muted">Incoming call</div>
+          <div class="mt-2 font-semibold">Jane Doe — New Patient</div>
+          <div class="mt-2 muted text-sm">"I need a teeth cleaning next week."</div>
+          <div class="mt-4 flex gap-3">
+            <button class="px-3 py-1 rounded-md" style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.12); color:#a7f3d0">Book</button>
+            <button class="px-3 py-1 rounded-md" style="background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.12); color:#fecaca">Reschedule</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FEATURES -->
+    <!-- Features -->
     <section id="features" class="max-w-6xl mx-auto px-6 lg:px-8 py-12">
-      <h3 class="text-3xl font-bold text-center gradient-text">Solutions built for clinics</h3>
+      <h2 class="text-3xl font-bold text-center gradient-text">What we automate</h2>
       <div class="mt-8 grid md:grid-cols-3 gap-6">
         <div class="card p-6">
-          <h4 class="font-semibold text-lg mb-2">AI Reception</h4>
-          <p class="text-sm text-purple-200/70">24/7 voice & chat receptionist that integrates with your calendar and EHR.</p>
+          <div class="font-semibold">AI Reception</div>
+          <p class="muted mt-2 text-sm">24/7 voice + chat receptionist that books appointments and triages patients into your calendar/EHR.</p>
         </div>
         <div class="card p-6">
-          <h4 class="font-semibold text-lg mb-2">No-Show Defense</h4>
-          <p class="text-sm text-purple-200/70">Smart reminders, WhatsApp automations, and instant fill-ins for cancellations.</p>
+          <div class="font-semibold">No-Show Defense</div>
+          <p class="muted mt-2 text-sm">Automated SMS/WhatsApp reminders, reschedule flows and waitlist broadcasts to fill empty slots.</p>
         </div>
         <div class="card p-6">
-          <h4 class="font-semibold text-lg mb-2">Insurance & Intake</h4>
-          <p class="text-sm text-purple-200/70">Automated patient intake and insurance verification with e-sign & uploads.</p>
+          <div class="font-semibold">Intake & Insurance</div>
+          <p class="muted mt-2 text-sm">Smart intake forms, e-sign, insurance verification and direct CRM/EHR sync before the visit.</p>
         </div>
       </div>
     </section>
 
-    <!-- PRICING -->
-    <section id="pricing" class="max-w-6xl mx-auto px-6 lg:px-8 py-12">
-      <h3 class="text-3xl font-bold text-center gradient-text">Simple Pricing</h3>
-      <div class="mt-8 grid md:grid-cols-3 gap-6">
-        <div class="card p-6 text-center">
-          <div class="text-xl font-semibold">$3k–$7k</div>
-          <p class="mt-2 text-sm text-purple-200/70">4-week pilot with AI receptionist, CRM setup, and reminders.</p>
-          <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="mt-5 inline-block cta-btn px-5 py-2 rounded-md">Start Pilot</a>
-        </div>
-        <div class="card p-6 text-center bg-gradient-to-b from-purple-800/10 to-transparent">
-          <div class="text-xl font-semibold">$1k–$2.5k / month</div>
-          <p class="mt-2 text-sm text-purple-200/70">Ongoing support, analytics, and optimization.</p>
-          <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="mt-5 inline-block ghost">Book Demo</a>
-        </div>
-        <div class="card p-6 text-center">
-          <div class="text-xl font-semibold">Enterprise</div>
-          <p class="mt-2 text-sm text-purple-200/70">Custom automation systems for hospitals and clinic networks.</p>
-          <a href="mailto:apexynhealth@gmail.com" class="mt-5 inline-block cta-btn px-5 py-2 rounded-md">Contact Sales</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- DEMO -->
+    <!-- Demo -->
     <section id="demo" class="max-w-6xl mx-auto px-6 lg:px-8 py-12">
-      <div class="grid lg:grid-cols-2 gap-10 items-center">
+      <div class="grid lg:grid-cols-2 gap-8 items-center">
         <div>
-          <h3 class="text-3xl font-bold gradient-text">See it in action</h3>
-          <p class="mt-3 text-purple-200/70">Schedule a 10-minute demo — we’ll show live pilots and ROI projections for your clinic.</p>
-          <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="cta-btn inline-block mt-5 px-5 py-3 rounded-md">Book Demo</a>
+          <h3 class="text-2xl font-bold gradient-text">See Apexyn in action</h3>
+          <p class="muted mt-3">Book a 10-min demo — we'll show live workflows and how Apexyn recovers revenue for clinics.</p>
+          <a class="cta-btn mt-6 inline-block" href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo">Book Demo</a>
         </div>
-        <div class="rounded-xl overflow-hidden border border-purple-700/10">
-          <iframe src="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo?embed_domain=apexyn.online&embed_type=Inline" style="width:100%;min-height:480px;border:0;"></iframe>
+        <div>
+          <div class="rounded-xl overflow-hidden border border-purple-700/10">
+            <iframe src="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo?embed_domain=apexyn.online&embed_type=Inline" style="width:100%;min-height:460px;border:0;"></iframe>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="mt-20 border-t border-purple-800/20 py-8">
-      <div class="max-w-6xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+    <!-- Footer -->
+    <footer class="mt-16 border-t border-purple-800/20 py-8">
+      <div class="max-w-6xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
         <div class="flex items-center gap-4">
-          <img src="logo.png" alt="Apexyn" class="w-10 h-10 rounded-md" />
+          <img src="./logo.png" alt="Apexyn" class="w-10 h-10 rounded-md" />
           <div>
             <div class="font-semibold">Apexyn Automations AI</div>
-            <div class="text-xs text-purple-200/60">hello@apexyn.online / apexynhealth@gmail.com</div>
+            <div class="text-xs muted">hello@apexyn.online • apexynhealth@gmail.com</div>
           </div>
         </div>
-        <div class="text-sm text-purple-200/60">&copy; 2025 Apexyn — All rights reserved.</div>
+        <div class="text-sm muted">&copy; 2025 Apexyn — All rights reserved</div>
       </div>
     </footer>
   </main>
 
-  <!-- Cursor + Animations -->
+  <!-- ---------------- Scripts: cursor particles, splash, gsap reveals ---------------- -->
   <script>
-    const spot = document.getElementById('cursorSpot');
-    const dot = document.getElementById('cursorDot');
-    document.addEventListener('mousemove', e => {
-      const x = e.clientX + 'px', y = e.clientY + 'px';
-      spot.style.setProperty('--cx', x);
-      spot.style.setProperty('--cy', y);
-      dot.style.left = x; dot.style.top = y;
+  // ================ Splash intro (logo shows then site) ================
+  window.addEventListener('load', () => {
+    const splash = document.getElementById('splash');
+    const img = document.getElementById('splashLogo');
+
+    // show logo (gsap if available)
+    if (window.gsap) {
+      gsap.fromTo(img, {opacity:0, scale:0.8}, {opacity:1, scale:1, duration:1.1, ease:"power3.out"});
+      gsap.to(img, {scale:1.05, duration:1.2, yoyo:true, repeat:1, ease:"sine.inOut"});
+      gsap.to(splash, {opacity:0, delay:1.8, duration:0.9, onComplete:()=>splash.style.display='none'});
+    } else {
+      img.style.opacity = '1';
+      setTimeout(()=>{ splash.style.display='none'; }, 1600);
+    }
+  });
+
+  // ================ Cursor spotlight & dot ================
+  const spot = document.getElementById('cursorSpot');
+  const dot = document.getElementById('cursorDot');
+  const canvas = document.getElementById('cursorCanvas');
+  const ctx = canvas.getContext('2d');
+
+  // resize canvas
+  function resizeCanvas(){
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  // particle trail
+  const particles = [];
+  function addParticle(x,y){
+    particles.push({x, y, life: 40 + Math.random()*20, r: 2 + Math.random()*3, vx:(Math.random()-0.5)*0.6, vy:(Math.random()-0.5)*0.6});
+    if(particles.length>200) particles.shift();
+  }
+  function renderParticles(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.life -= 1;
+      const alpha = p.life/60;
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(138,0,255,${0.18*alpha})`;
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+      if(p.life <= 0) particles.splice(i,1);
+    }
+    requestAnimationFrame(renderParticles);
+  }
+  renderParticles();
+
+  // pointer movement
+  document.addEventListener('mousemove', (e) => {
+    const x = e.clientX + 'px', y = e.clientY + 'px';
+    spot.style.setProperty('--cx', x);
+    spot.style.setProperty('--cy', y);
+    dot.style.left = x; dot.style.top = y;
+    addParticle(e.clientX + (Math.random()-0.5)*8, e.clientY + (Math.random()-0.5)*8);
+  });
+
+  // intensify on hover
+  const interactive = document.querySelectorAll('a, button, .card');
+  interactive.forEach(el=>{
+    el.addEventListener('mouseenter', ()=> {
+      dot.style.transform = 'translate(-50%,-50%) scale(1.7)';
+      dot.style.boxShadow = '0 0 36px rgba(168,85,247,0.45), 0 0 70px rgba(91,43,255,0.28)';
+      spot.style.opacity = '1';
     });
-    document.querySelectorAll('a,button,.card').forEach(el=>{
-      el.addEventListener('mouseenter',()=>dot.style.transform='translate(-50%,-50%) scale(1.5)');
-      el.addEventListener('mouseleave',()=>dot.style.transform='translate(-50%,-50%) scale(1)');
+    el.addEventListener('mouseleave', ()=> {
+      dot.style.transform = 'translate(-50%,-50%) scale(1)';
+      dot.style.boxShadow = '0 0 18px rgba(168,85,247,0.36)';
+      spot.style.opacity = '0.95';
     });
-    window.addEventListener('load',()=>{
+  });
+
+  // ================ GSAP scroll reveals (if GSAP loaded) ================
+  window.addEventListener('load', ()=>{
+    if(window.gsap){
       gsap.registerPlugin(ScrollTrigger);
-      gsap.from(".hero-title",{y:40,opacity:0,duration:1,ease:"power3.out"});
-      gsap.utils.toArray('.card').forEach((card,i)=>{
-        gsap.from(card,{scrollTrigger:{trigger:card,start:"top 85%"},y:30,opacity:0,duration:0.8,delay:i*0.05});
+      gsap.from(".hero-title",{y:30, opacity:0, duration:1, ease:"power3.out"});
+      gsap.from(".hero-sub", {y:10, opacity:0, duration:0.9, delay:0.12});
+      gsap.utils.toArray('.card').forEach((card, i) => {
+        gsap.from(card, { scrollTrigger: { trigger: card, start: "top 85%" }, y: 30, opacity: 0, duration: 0.8, delay: i*0.06, ease:"power3.out" });
       });
-    });
+    }
+  });
   </script>
 </body>
 </html>
