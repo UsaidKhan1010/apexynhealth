@@ -12,8 +12,21 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
 
+  <!-- ========== SEO & Social meta (B) ========== -->
   <meta name="description" content="Apexyn — AI receptionist & clinic automation. Reduce no-shows, automate intake, and recover lost revenue. Book a free demo." />
+  <meta property="og:title" content="Apexyn — AI Receptionist & Clinic Automation" />
+  <meta property="og:description" content="Reduce no-shows, automate intake and free your staff with AI receptionist + automations." />
+  <meta property="og:image" content="https://apexyn.online/logo.png" />
+  <meta property="og:url" content="https://apexyn.online" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#0b0018" />
+
+  <!-- Favicon -->
   <link rel="icon" href="./logo.png" />
+
+  <!-- ========== GA4 (D) - loaded AFTER consent; measurement ID inserted below ========== -->
+  <!-- We will not automatically load gtag. The cookie consent controls whether GA is initialized. -->
 
   <style>
     :root{
@@ -78,9 +91,14 @@
 
     .gradient-text { background: linear-gradient(90deg,var(--accent1),var(--accent2)); -webkit-background-clip:text; color:transparent; }
 
-    /* small helpers */
-    .muted { color: rgba(220,210,255,0.6); }
-    @media (max-width:720px){ .hero-title{ font-size:1.6rem } .hide-xs{display:none} }
+    /* cookie banner */
+    #cookieBanner {
+      position: fixed; bottom: 18px; left: 18px; right:18px; max-width: 980px; margin: 0 auto;
+      background: rgba(8,3,18,0.95); border: 1px solid rgba(138,0,255,0.06); padding: 16px; border-radius: 12px; z-index: 9998;
+      display:flex; gap:12px; align-items:center; justify-content:space-between; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    }
+    #cookieBanner .actions { display:flex; gap:8px; align-items:center; }
+    @media (max-width:720px){ #cookieBanner{flex-direction:column;align-items:flex-start} }
   </style>
 </head>
 <body>
@@ -108,7 +126,7 @@
       <nav class="flex items-center gap-4">
         <a href="#features" class="muted hover:text-white">Solutions</a>
         <a href="#demo" class="muted hover:text-white">Demo</a>
-        <a href="mailto:apexynhealth@gmail.com" class="ghost">Contact</a>
+        <a href="contact.html" class="ghost">Contact</a>
         <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="cta-btn ml-2">Book Demo</a>
       </nav>
     </div>
@@ -122,7 +140,7 @@
         <h1 class="text-5xl lg:text-6xl font-extrabold hero-title gradient-text">Revolutionize your clinic with AI reception & automation</h1>
         <p class="mt-6 muted max-w-xl">Apexyn automates calls, bookings, reminders and intake — reduce no-shows, recover lost revenue and free your team to focus on care.</p>
         <div class="mt-8 flex flex-wrap gap-4">
-          <a href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo" class="cta-btn">Schedule Free Demo</a>
+          <a id="demoCTALink" href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo?utm_source=website&utm_medium=landingpage&utm_campaign=demo-cta" class="cta-btn">Schedule Free Demo</a>
           <a href="#features" class="ghost">Explore Solutions</a>
         </div>
       </div>
@@ -165,7 +183,7 @@
         <div>
           <h3 class="text-2xl font-bold gradient-text">See Apexyn in action</h3>
           <p class="muted mt-3">Book a 10-min demo — we'll show live workflows and how Apexyn recovers revenue for clinics.</p>
-          <a class="cta-btn mt-6 inline-block" href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo">Book Demo</a>
+          <a class="cta-btn mt-6 inline-block" href="https://calendly.com/apexynaiautomations/ai-receptionist-agent-demo?utm_source=website&utm_medium=landingpage&utm_campaign=demo-cta">Book Demo</a>
         </div>
         <div>
           <div class="rounded-xl overflow-hidden border border-purple-700/10">
@@ -185,14 +203,81 @@
             <div class="text-xs muted">hello@apexyn.online • apexynhealth@gmail.com</div>
           </div>
         </div>
-        <div class="text-sm muted">&copy; 2025 Apexyn — All rights reserved</div>
+        <div class="text-sm muted">
+          <a href="privacy.html" class="muted hover:text-white">Privacy</a> •
+          <a href="terms.html" class="muted hover:text-white">Terms</a> •
+          <a href="refunds.html" class="muted hover:text-white">Refunds</a> •
+          <a href="contact.html" class="muted hover:text-white">Contact</a>
+        </div>
       </div>
     </footer>
   </main>
 
-  <!-- ---------------- Scripts: cursor particles, splash, gsap reveals ---------------- -->
+  <!-- Cookie banner (hidden if consent saved) -->
+  <div id="cookieBanner" aria-hidden="true" style="display:none;">
+    <div>
+      <strong>Apexyn uses cookies</strong>
+      <div class="muted" style="max-width:520px; margin-top:6px;">
+        We use cookies to improve site performance, understand traffic (Google Analytics) and to save your demo booking preferences. You can accept all or manage preferences. Read our <a href="privacy.html" class="underline">Privacy Policy</a>.
+      </div>
+    </div>
+    <div class="actions">
+      <button id="acceptCookies" class="cta-btn">Accept</button>
+      <button id="rejectCookies" class="ghost">Reject</button>
+      <a href="privacy.html" class="muted" style="margin-left:8px">Manage</a>
+    </div>
+  </div>
+
+  <!-- ================= SCRIPTS: cookie consent, GA (only after consent), cursor particles, splash, GSAP reveals ================= -->
   <script>
-  // ================ Splash intro (logo shows then site) ================
+  // ---------- Utility: localStorage key ----------
+  const CONSENT_KEY = 'apexyn_cookie_consent_v1'; // change version if you change policy
+
+  // ---------- Cookie banner logic ----------
+  function showCookieBannerIfNeeded(){
+    const consent = localStorage.getItem(CONSENT_KEY);
+    const banner = document.getElementById('cookieBanner');
+    if(consent === null){
+      banner.style.display = 'flex';
+      banner.setAttribute('aria-hidden','false');
+    } else {
+      banner.style.display = 'none';
+      banner.setAttribute('aria-hidden','true');
+      if(consent === 'accepted') initGA(); // if previously accepted, initialize GA immediately
+    }
+  }
+
+  document.getElementById && document.getElementById('acceptCookies')?.addEventListener('click', ()=>{
+    localStorage.setItem(CONSENT_KEY, 'accepted');
+    document.getElementById('cookieBanner').style.display='none';
+    initGA();
+  });
+
+  document.getElementById && document.getElementById('rejectCookies')?.addEventListener('click', ()=>{
+    localStorage.setItem(CONSENT_KEY, 'rejected');
+    document.getElementById('cookieBanner').style.display='none';
+  });
+
+  // ---------- Google Analytics loader (runs only after consent) ----------
+  function initGA(){
+    if(window.__apexyn_ga_loaded) return;
+    window.__apexyn_ga_loaded = true;
+
+    // Insert GA script
+    const gaId = 'G-MDC2QT4DGG'; // YOUR measurement ID
+    const s = document.createElement('script');
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+    s.async = true;
+    document.head.appendChild(s);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', gaId, { 'anonymize_ip': true }); // anonymize IP by default
+  }
+
+  // ---------- Splash intro (logo shows then site) ----------
   window.addEventListener('load', () => {
     const splash = document.getElementById('splash');
     const img = document.getElementById('splashLogo');
@@ -206,36 +291,31 @@
       img.style.opacity = '1';
       setTimeout(()=>{ splash.style.display='none'; }, 1600);
     }
+
+    // show cookie banner if needed
+    showCookieBannerIfNeeded();
   });
 
-  // ================ Cursor spotlight & dot ================
+  // ---------- Cursor spotlight & particle trail ----------
   const spot = document.getElementById('cursorSpot');
   const dot = document.getElementById('cursorDot');
   const canvas = document.getElementById('cursorCanvas');
   const ctx = canvas.getContext('2d');
 
-  // resize canvas
-  function resizeCanvas(){
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-  }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
+  function resizeCanvas(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+  resizeCanvas(); window.addEventListener('resize', resizeCanvas);
 
-  // particle trail
   const particles = [];
   function addParticle(x,y){
     particles.push({x, y, life: 40 + Math.random()*20, r: 2 + Math.random()*3, vx:(Math.random()-0.5)*0.6, vy:(Math.random()-0.5)*0.6});
-    if(particles.length>200) particles.shift();
+    if(particles.length>220) particles.shift();
   }
   function renderParticles(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     for(let i=particles.length-1;i>=0;i--){
       const p = particles[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.life -= 1;
-      const alpha = p.life/60;
+      p.x += p.vx; p.y += p.vy; p.life -= 1;
+      const alpha = Math.max(0, p.life/60);
       ctx.beginPath();
       ctx.fillStyle = `rgba(138,0,255,${0.18*alpha})`;
       ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
@@ -246,11 +326,9 @@
   }
   renderParticles();
 
-  // pointer movement
   document.addEventListener('mousemove', (e) => {
     const x = e.clientX + 'px', y = e.clientY + 'px';
-    spot.style.setProperty('--cx', x);
-    spot.style.setProperty('--cy', y);
+    spot.style.setProperty('--cx', x); spot.style.setProperty('--cy', y);
     dot.style.left = x; dot.style.top = y;
     addParticle(e.clientX + (Math.random()-0.5)*8, e.clientY + (Math.random()-0.5)*8);
   });
@@ -270,7 +348,7 @@
     });
   });
 
-  // ================ GSAP scroll reveals (if GSAP loaded) ================
+  // ---------- GSAP scroll reveals ----------
   window.addEventListener('load', ()=>{
     if(window.gsap){
       gsap.registerPlugin(ScrollTrigger);
